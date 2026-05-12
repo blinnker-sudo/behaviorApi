@@ -1,0 +1,10 @@
+{
+  "country": "PE",
+  "flows": {
+    "onboarding": {
+      "INIT": ["validate.input", "create.customer"],
+      "LAYOUT": ["render.form.pe", "load.catalogs.sunat"],
+      "COMPLETE": ["validate.ruc", "register.sunat"]
+    }
+  }
+}

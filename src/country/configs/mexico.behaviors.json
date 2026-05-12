@@ -1,0 +1,20 @@
+{
+  "country": "MX",
+  "flows": {
+    "onboarding": {
+      "INIT": ["validate.input", "create.customer", "request.documents"],
+      "LAYOUT": ["render.form.mx", "load.catalogs.sat"],
+      "COMPLETE": ["validate.rfc", "register.sat", "notify.email"]
+    },
+    "credit-application": {
+      "INIT": ["validate.input", "check.blacklist"],
+      "LAYOUT": ["render.credit.form.mx"],
+      "COMPLETE": ["score.buro", "persist.application"]
+    },
+    "n2": {
+      "INIT": [],
+      "LAYOUT": [],
+      "COMPLETE": ["compare.ocr"]
+    }
+  }
+}
