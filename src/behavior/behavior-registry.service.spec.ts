@@ -2,11 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DiscoveryModule } from '@nestjs/core';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { BehaviorRegistry } from './behavior-registry.service';
-import { RegisterBehavior } from './register-behavior.decorator';
 import { Behavior, DataWorkflowDto } from '../contracts';
 
 @Injectable()
-@RegisterBehavior('a')
 class BehaviorA implements Behavior {
   readonly name = 'a';
   async execute(): Promise<string> {
@@ -15,7 +13,6 @@ class BehaviorA implements Behavior {
 }
 
 @Injectable()
-@RegisterBehavior('b')
 class BehaviorB implements Behavior {
   readonly name = 'b';
   async execute(): Promise<string> {
@@ -40,7 +37,7 @@ const buildModule = async (
 };
 
 describe('BehaviorRegistry', () => {
-  it('ejecuta el behavior solicitado por nombre', async () => {
+  it('descubre behaviors por propiedad name y los ejecuta', async () => {
     const module = await buildModule();
     await module.init();
     const reg = module.get(BehaviorRegistry);

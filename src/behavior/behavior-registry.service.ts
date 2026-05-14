@@ -1,16 +1,12 @@
 import { Injectable, NotImplementedException, OnModuleInit } from '@nestjs/common';
-import { DiscoveryService, Reflector } from '@nestjs/core';
+import { DiscoveryService } from '@nestjs/core';
 import { Behavior, BehaviorContext, DataWorkflowDto } from '../contracts';
-import { BEHAVIOR_METADATA } from './behavior.tokens';
 
 @Injectable()
 export class BehaviorRegistry implements OnModuleInit {
   private readonly behaviors = new Map<string, Behavior>();
 
-  constructor(
-    private readonly discoveryService: DiscoveryService,
-    private readonly reflector: Reflector,
-  ) {}
+  constructor(private readonly discoveryService: DiscoveryService) {}
 
   onModuleInit(): void {
     this.discover();
@@ -18,16 +14,15 @@ export class BehaviorRegistry implements OnModuleInit {
 
   private discover(): void {
     for (const wrapper of this.discoveryService.getProviders()) {
-      const { instance } = wrapper;
-      if (!instance || typeof instance !== 'object') continue;
-      const ctor = instance.constructor;
-      if (!ctor) continue;
-      const name = this.reflector.get<string>(BEHAVIOR_METADATA, ctor);
-      if (!name) continue;
-      if (this.behaviors.has(name)) {
-        throw new Error(`Behavior duplicado '${name}'`);
+      if (!wrapper.metatype) continue;
+      const instance = wrapper.instance as Partial<Behavior> | null;
+      if (!instance) continue;
+      if (typeof instance.name !== 'string') continue;
+      if (typeof instance.execute !== 'function') continue;
+      if (this.behaviors.has(instance.name)) {
+        throw new Error(`Behavior duplicado '${instance.name}'`);
       }
-      this.behaviors.set(name, instance as Behavior);
+      this.behaviors.set(instance.name, instance as Behavior);
     }
   }
 
