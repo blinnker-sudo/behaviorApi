@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(await AppModule.register());
+  const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(
     new ValidationPipe({
